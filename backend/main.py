@@ -32,6 +32,7 @@ origins = [
     "https://localhost.tiangolo.com",
     "http://localhost",
     "http://localhost:5173",
+    "http://localhost:5174"
 ]
 
 app.add_middleware(
@@ -60,8 +61,9 @@ def get_items():
     population=(np.array(population).tolist())
     dataX=(np.array(X.reshape(-1)).tolist())
     dataY=(np.array(y).tolist())
+    tc=(np.array(true_curve).tolist())
     print(X)
-    return {"dataX":dataX,"dataY":dataY,"population":population,"expression":expr}
+    return {"trueCurve":tc,"dataX":dataX,"dataY":dataY,"population":population,"expression":expr}
     # arr = np.fromstring(population,dtype=float).reshape(2,200)
     # print(arr)
 
@@ -80,5 +82,7 @@ def exec(item:Item):
     population=(np.array(population).tolist())
     dataX=(np.array(X.reshape(-1)).tolist())
     dataY=(np.array(y).tolist())
-    return {"dataX":dataX,"dataY":dataY,"population":population,"expression":expr}
+    tc=(np.array(true_curve).tolist())
+
+    return {"trueCurve":tc,"dataX":dataX,"dataY":dataY,"population":population,"expression":expr}
     

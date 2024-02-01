@@ -7,15 +7,15 @@ const ScatterPlot = ({ data,val,setVal,ind }) => {
     x: data.X,
     y: data.trueCurve.map(point => point.y),
     mode: 'lines',
-    name: 'True Curve',
+    name: 'Curve',
     line: { dash: 'solid', color: 'blue' }
   };
 
   const trace2 = {
     x: data.X,
-    y: data.syntheticData.map(point => point.y),
-    mode: 'markers',
-    name: 'Synthetic Data with Noise',
+    y: data.syntheticData,
+    mode: 'lines',
+    name: 'Synthetic Data',
     marker: { color: 'orange', size: 8 }
   };
 
