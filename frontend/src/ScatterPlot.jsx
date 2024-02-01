@@ -1,58 +1,29 @@
-// ScatterPlot.js
-import React, { useEffect, useRef } from 'react';
-import * as d3 from 'd3';
+import React from 'react';
+import Plot from 'react-plotly.js';
 import './scatter.css'
 
 const ScatterPlot = ({ data,val,setVal,ind }) => {
-  const svgRef = useRef();
+  const trace1 = {
+    x: data.X,
+    y: data.trueCurve.map(point => point.y),
+    mode: 'lines',
+    name: 'True Curve',
+    line: { dash: 'solid', color: 'blue' }
+  };
 
-  useEffect(() => {
-    const margin = { top: 20, right: 20, bottom: 50, left: 50 };
-    const width = 400
-    const height =300
+  const trace2 = {
+    x: data.X,
+    y: data.syntheticData.map(point => point.y),
+    mode: 'markers',
+    name: 'Synthetic Data with Noise',
+    marker: { color: 'orange', size: 8 }
+  };
 
-    const svg = d3.select(svgRef.current)
-      .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom)
-      .append('g')
-      .attr('transform', `translate(${margin.left},${margin.top})`);
-
-    // Create scales
-    const xScale = d3.scaleLinear().domain([0, 4 * Math.PI]).range([0, width]);
-    const yScale = d3.scaleLinear().domain([-15, 15]).range([height, 0]);
-
-    // Plot true curve
-    const line = d3.line()
-      .x(d => xScale(d.x))
-      .y(d => yScale(d.y));
-
-    svg.append('path')
-      .data([data.trueCurve])
-      .attr('class', 'line')
-      .attr('d', line)
-      .style('stroke', 'blue')
-      .style('stroke-dasharray', '5,5')
-      .style('fill', 'none');
-
-    // Plot synthetic data
-    svg.selectAll('circle')
-      .data(data.syntheticData)
-      .enter().append('circle')
-      .attr('cx', d => xScale(d.x))
-      .attr('cy', d => yScale(d.y))
-      .attr('r', 3) // Decreased circle radius
-      .style('fill', 'orange')
-      .style('opacity', 0.7);
-
-    // Add axes
-    svg.append('g')
-      .attr('transform', `translate(0,${height})`)
-      .call(d3.axisBottom(xScale));
-
-    svg.append('g')
-      .call(d3.axisLeft(yScale));
-
-  }, [data]);
+  const layout = {
+    title: data.eqn,
+    xaxis: { title: 'Feature (X)' },
+    yaxis: { title: 'Target (y)' },
+  };
   const handleInputChange=(event)=>{
     setVal((prev)=>{
         var arr=[...prev]
@@ -62,11 +33,15 @@ const ScatterPlot = ({ data,val,setVal,ind }) => {
         return prev
     })
   }
+
   return (
-    <div>
-        <p className='title'>{data.eqn}</p>
-        <svg className="graph" ref={svgRef}></svg>
-        <input
+    
+    <div className="graph">
+      <Plot
+      data={[trace1, trace2]}
+      layout={layout}
+      />
+      <input
         type="number"
         id="inputBox"
         value={val[ind]}
@@ -74,6 +49,7 @@ const ScatterPlot = ({ data,val,setVal,ind }) => {
         placeholder="Type something..."
       />
     </div>
+
   );
 };
 

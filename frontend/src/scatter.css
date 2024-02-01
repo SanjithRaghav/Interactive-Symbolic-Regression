@@ -1,6 +1,8 @@
 .graph{
-    margin:0 40px;
+   display: inline;
+   max-width:50%;
+
 }
-/* .title{
-    display: inline;
-} */
+input{
+    display:block;
+}

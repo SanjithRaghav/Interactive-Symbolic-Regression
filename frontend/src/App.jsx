@@ -19,7 +19,7 @@ const App = () => {
       const trueCurve=data.dataX.map((f,i)=>{
         return {x:f,y:p[i]}
       })
-      return {eqn:data.expression[j],trueCurve,syntheticData}
+      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData}
     })
 
     setVal(data.population.map((i)=>(0)))
@@ -44,7 +44,7 @@ const App = () => {
       const trueCurve=data.dataX.map((f,i)=>{
         return {x:f,y:p[i]}
       })
-      return {eqn:data.expression[j],trueCurve,syntheticData}
+      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData}
     })
 
     setVal(data.population.map((i)=>(0)))
