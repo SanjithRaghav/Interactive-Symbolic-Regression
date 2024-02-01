@@ -1,56 +1,46 @@
+// ScatterPlot3D.js
 import React from 'react';
 import Plot from 'react-plotly.js';
-import './scatter.css'
 
-const ScatterPlot = ({ data,val,setVal,ind }) => {
+const ScatterPlot3D = ({ data }) => {
   const trace1 = {
     x: data.X,
-    y: data.trueCurve.map(point => point.y),
-    mode: 'lines',
-    name: 'Curve',
-    line: { dash: 'solid', color: 'blue' }
+    y: data.Y,
+    z: data.Z,
+    type: 'scatter3d',
+    mode: 'markers',
+    marker: { size: 4, color: 'orange' },
+    name: 'Synthetic Data with Noise',
   };
-
+ console.log(data.X,data.Y,data.trueCurve.map(row => row.y))
   const trace2 = {
     x: data.X,
-    y: data.syntheticData,
+    y: data.Y,
+    z: data.trueCurve.map(row => row.y),
+    type: 'scatter3d',
     mode: 'lines',
-    name: 'Synthetic Data',
-    marker: { color: 'orange', size: 8 }
+    opacity: 0.8,
+    name: 'Surface Curve',
   };
 
   const layout = {
-    title: data.eqn,
-    xaxis: { title: 'Feature (X)' },
-    yaxis: { title: 'Target (y)' },
+    title: '3D Scatter Plot with Surface Curve',
+    scene: {
+      xaxis: { title: 'X Axis' },
+      yaxis: { title: 'Y Axis' },
+      zaxis: { title: 'Z Axis' },
+    },
+    width: window.innerWidth,
+    height: window.innerHeight,
   };
-  const handleInputChange=(event)=>{
-    setVal((prev)=>{
-        var arr=[...prev]
-        arr[ind]=event.target.value
-        if(arr[ind]<=5 && arr[ind]>=0)
-            return arr
-        return prev
-    })
-  }
 
   return (
-    
-    <div className="graph">
-      <Plot
-      data={[trace1, trace2]}
+    <Plot
+      data={[ trace2]}
       layout={layout}
-      />
-      <input
-        type="number"
-        id="inputBox"
-        value={val[ind]}
-        onChange={handleInputChange}
-        placeholder="Type something..."
-      />
-    </div>
-
+      style={{ width: '100%', height: '100vh' }}
+    />
   );
 };
 
-export default ScatterPlot;
+export default ScatterPlot3D;
