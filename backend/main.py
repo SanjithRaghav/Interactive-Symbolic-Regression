@@ -1,19 +1,25 @@
 from typing import Union
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.utils import check_random_state
 
 # Set the seed for reproducibility
 np.random.seed(42)
-
+rng = check_random_state(0)
 # Generate synthetic data with a combination of sine and cosine functions
-X = np.linspace(0, 4 * np.pi, 200)
-true_curve = 2 * np.sin(X) + 1.5 * np.cos(0.5 * X)  # True curve without noise
-y = true_curve + np.random.normal(0, 5, 200)  # Synthetic data with noise
+X = np.random.uniform(low=-5, high=5, size=100)
+Y = np.random.uniform(low=-5, high=5, size=100)
+true_curve = 0.4 * X * Y - 1.5 * X + 2.5 * Y + 1
+
+y = true_curve + np.random.normal(0, 5, 100)  # Synthetic data with noise
+# print(X,Y)
+X_train=np.column_stack((X,Y))
+# print(X_train)
 # Reshape X and y to match the expected format
-X = X.reshape(-1, 1)  # Reshape X to [n_samples, n_features] where n_features is 1
+# X = X.reshape(-1, 1)  # Reshape X to [n_samples, n_features] where n_features is 1
 y = y.reshape(-1)     # Reshape y to [n_samples]
 from gplearn.genetic import SymbolicRegressor
-est_gp = SymbolicRegressor(population_size=12,
+est_gp = SymbolicRegressor(population_size=1,
                            generations=1, stopping_criteria=0.01,
                            p_crossover=0.7, p_subtree_mutation=0.1,
                            p_hoist_mutation=0.05, p_point_mutation=0.1,
@@ -52,15 +58,17 @@ pop=[]
 @app.get("/gen")
 def get_items():
     est_gp.set_params(generations=gen, warm_start=True)
-    population=est_gp.fit(X, y)
+    population=est_gp.fit(X_train, y)
     global pop
     expr=[x.expression() for x in population]
     pop=[x for x in population]
 
-    population=[x.execute(X) for x in population]
+    population=[x.execute(X_train) for x in population]
+
     population=(np.array(population).tolist())
-    dataX=(np.array(X.reshape(-1)).tolist())
+    dataX = np.vstack((X, Y)).tolist()
     dataY=(np.array(y).tolist())
+
     tc=(np.array(true_curve).tolist())
     print(X)
     return {"trueCurve":tc,"dataX":dataX,"dataY":dataY,"population":population,"expression":expr}
@@ -75,12 +83,12 @@ def exec(item:Item):
     est_gp.fitCalc(pop,item.user_fitness)
     gen+=1
     est_gp.set_params(generations=gen, warm_start=True)
-    population=est_gp.fit(X, y)
+    population=est_gp.fit(X_train, y)
     expr=[x.expression() for x in population]
     pop=[x for x in population]
-    population=[x.execute(X) for x in population]
+    population=[x.execute(X_train) for x in population]
     population=(np.array(population).tolist())
-    dataX=(np.array(X.reshape(-1)).tolist())
+    dataX = np.vstack((X, Y)).tolist()
     dataY=(np.array(y).tolist())
     tc=(np.array(true_curve).tolist())
 
