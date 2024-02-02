@@ -6,25 +6,25 @@ const ScatterPlot3D = ({ data }) => {
   const trace1 = {
     x: data.X,
     y: data.Y,
-    z: data.Z,
-    type: 'scatter3d',
-    mode: 'markers',
+    z: data.curve,
+    type: 'surface',
+    colorscale: 'Viridis',
     marker: { size: 4, color: 'orange' },
     name: 'Synthetic Data with Noise',
   };
- console.log(data.X,data.Y,data.trueCurve.map(row => row.y))
+ console.log(data.X,data.Y,data.curve)
   const trace2 = {
     x: data.X,
     y: data.Y,
-    z: data.trueCurve.map(row => row.y),
-    type: 'scatter3d',
-    mode: 'lines',
+    z: data.syntheticData,
+    type: 'surface',
+    colorscale: 'Greys',
     opacity: 0.8,
     name: 'Surface Curve',
   };
 
   const layout = {
-    title: '3D Scatter Plot with Surface Curve',
+    title: data.eqn,
     scene: {
       xaxis: { title: 'X Axis' },
       yaxis: { title: 'Y Axis' },
@@ -36,7 +36,7 @@ const ScatterPlot3D = ({ data }) => {
 
   return (
     <Plot
-      data={[ trace2]}
+      data={[trace1,trace2]}
       layout={layout}
       style={{ width: '100%', height: '100vh' }}
     />

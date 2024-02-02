@@ -10,7 +10,10 @@ rng = check_random_state(0)
 X = np.random.uniform(low=-5, high=5, size=100)
 Y = np.random.uniform(low=-5, high=5, size=100)
 true_curve = 0.4 * X * Y - 1.5 * X + 2.5 * Y + 1
-
+x0 = np.arange(-1, 1, 1/10.)
+x1 = np.arange(-1, 1, 1/10.)
+x2, x3 = np.meshgrid(x0, x1)
+y1=0.4 * x2 * x3 - 1.5 * x2 + 2.5 * x3 + 1
 y = true_curve + np.random.normal(0, 5, 100)  # Synthetic data with noise
 # print(X,Y)
 X_train=np.column_stack((X,Y))
@@ -19,7 +22,7 @@ X_train=np.column_stack((X,Y))
 # X = X.reshape(-1, 1)  # Reshape X to [n_samples, n_features] where n_features is 1
 y = y.reshape(-1)     # Reshape y to [n_samples]
 from gplearn.genetic import SymbolicRegressor
-est_gp = SymbolicRegressor(population_size=1,
+est_gp = SymbolicRegressor(population_size=6,
                            generations=1, stopping_criteria=0.01,
                            p_crossover=0.7, p_subtree_mutation=0.1,
                            p_hoist_mutation=0.05, p_point_mutation=0.1,
@@ -63,15 +66,13 @@ def get_items():
     expr=[x.expression() for x in population]
     pop=[x for x in population]
 
-    population=[x.execute(X_train) for x in population]
+    population=[x.execute(np.c_[x2.ravel(), x3.ravel()]).reshape(x3.shape) for x in population]
 
     population=(np.array(population).tolist())
-    dataX = np.vstack((X, Y)).tolist()
-    dataY=(np.array(y).tolist())
 
-    tc=(np.array(true_curve).tolist())
+
     print(X)
-    return {"trueCurve":tc,"dataX":dataX,"dataY":dataY,"population":population,"expression":expr}
+    return {"trueCurve":y1.tolist(),"dataX":x0.tolist(),"dataY":x1.tolist(),"population":population,"expression":expr}
     # arr = np.fromstring(population,dtype=float).reshape(2,200)
     # print(arr)
 
@@ -86,11 +87,7 @@ def exec(item:Item):
     population=est_gp.fit(X_train, y)
     expr=[x.expression() for x in population]
     pop=[x for x in population]
-    population=[x.execute(X_train) for x in population]
+    population=[x.execute(np.c_[x2.ravel(), x3.ravel()]).reshape(x3.shape) for x in population]
     population=(np.array(population).tolist())
-    dataX = np.vstack((X, Y)).tolist()
-    dataY=(np.array(y).tolist())
-    tc=(np.array(true_curve).tolist())
 
-    return {"trueCurve":tc,"dataX":dataX,"dataY":dataY,"population":population,"expression":expr}
-    
+    return {"trueCurve":y1.tolist(),"dataX":x0.tolist(),"dataY":x1.tolist(),"population":population,"expression":expr}

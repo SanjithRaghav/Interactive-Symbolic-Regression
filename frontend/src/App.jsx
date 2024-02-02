@@ -13,13 +13,9 @@ const App = () => {
     const res=await fetch("http://localhost:8000/gen")
     const data=await res.json()
     const pop=data.population.map((p,j)=>{
-      const syntheticData=data.dataX[0].map((f,i)=>{
-        return {y:data.dataY[i]}
-      })
-      const trueCurve=data.dataX[0].map((f,i)=>{
-        return {y:p[i]}
-      })
-      return {eqn:data.expression[j],X:data.dataX[0],Y:data.dataX[1],trueCurve,syntheticData:data.trueCurve}
+
+      const curve=p
+      return {eqn:data.expression[j],X:data.dataX,Y:data.dataY,curve,syntheticData:data.trueCurve}
     })
 
     setVal(data.population.map((i)=>(0)))
