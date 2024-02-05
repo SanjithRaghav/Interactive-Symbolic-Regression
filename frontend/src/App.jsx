@@ -34,13 +34,8 @@ const App = () => {
     })
     const data=await res.json()
     const pop=data.population.map((p,j)=>{
-      const syntheticData=data.dataX.map((f,i)=>{
-        return {x:f,y:data.dataY[i]}
-      })
-      const trueCurve=data.dataX.map((f,i)=>{
-        return {x:f,y:p[i]}
-      })
-      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.trueCurve}
+      const curve=p
+      return {eqn:data.expression[j],X:data.dataX,Y:data.dataY,curve,syntheticData:data.trueCurve}
     })
 
     setVal(data.population.map((i)=>(0)))
