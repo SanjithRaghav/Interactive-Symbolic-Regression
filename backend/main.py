@@ -5,13 +5,11 @@ import matplotlib.pyplot as plt
 # Set the seed for reproducibility
 np.random.seed(42)
 
-# Generate synthetic data with a combination of sine and cosine functions
 X = np.linspace(0, 4 * np.pi, 200)
-true_curve = 2 * np.sin(X) + 1.5 * np.cos(0.5 * X)  # True curve without noise
-y = true_curve + np.random.normal(0, 5, 200)  # Synthetic data with noise
-# Reshape X and y to match the expected format
-X = X.reshape(-1, 1)  # Reshape X to [n_samples, n_features] where n_features is 1
-y = y.reshape(-1)     # Reshape y to [n_samples]
+true_curve = 2 * np.sin(X) + 1.5 * np.cos(0.5 * X)  
+y = true_curve + np.random.normal(0, 5, 200)  
+X = X.reshape(-1, 1) 
+y = y.reshape(-1)    
 from gplearn.genetic import SymbolicRegressor
 est_gp = SymbolicRegressor(population_size=12,
                            generations=1, stopping_criteria=0.01,
