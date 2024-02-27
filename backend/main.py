@@ -1,22 +1,39 @@
 from typing import Union
 import numpy as np
 import matplotlib.pyplot as plt
-
+from scipy.special import erf
 # Set the seed for reproducibility
 np.random.seed(42)
+def true_curve(x):
+    # return ((0.4 * x**4) - (1.4 * x**3)) / ((0.68 * x**2) + 1)
+    return erf(0.22 * x) + 0.17 * np.sin(5.5 * x)
 
-X = np.linspace(0, 4 * np.pi, 200)
-true_curve = 2 * np.sin(X) + 1.5 * np.cos(0.5 * X)  
-y = true_curve + np.random.normal(0, 5, 200)  
-X = X.reshape(-1, 1) 
-y = y.reshape(-1)    
+
+# Create the original data
+x = np.linspace(-5, 15, 200)
+y_true = true_curve(x)
+y_noisy=true_curve(x)
+# Define noise ratios
+noise_ratios = [0.05, 0.1, 0.15]
+
+
+# y_noisy += np.random.normal(0, 
+#                     0.15*np.sqrt(np.mean(np.square(y_noisy))),
+#                     size=len(y_noisy))
+
+
+X = x.reshape(-1, 1) 
+y = y_noisy.reshape(-1)      
 from gplearn.genetic import SymbolicRegressor
-est_gp = SymbolicRegressor(population_size=12,
+
+
+est_gp = SymbolicRegressor(population_size=30,
                            generations=1, stopping_criteria=0.01,
-                           p_crossover=0.7, p_subtree_mutation=0.1,
-                           p_hoist_mutation=0.05, p_point_mutation=0.1,
+                           p_crossover=0.4, p_subtree_mutation=0.2,
+                           p_hoist_mutation=0.1, p_point_mutation=0.3,
                            max_samples=0.9, verbose=1,
-                           parsimony_coefficient=0.01, random_state=0,function_set=("add","sub","mul","div","sin","inv","cos"))
+                           parsimony_coefficient=0.01, random_state=0,function_set=('add','mul','sub','div','sin','cos','tan'))
+
 
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -54,33 +71,55 @@ def get_items():
     global pop
     expr=[x.expression() for x in population]
     pop=[x for x in population]
-
     population=[x.execute(X) for x in population]
     population=(np.array(population).tolist())
     dataX=(np.array(X.reshape(-1)).tolist())
     dataY=(np.array(y).tolist())
-    tc=(np.array(true_curve).tolist())
-    print(X)
-    return {"trueCurve":tc,"dataX":dataX,"dataY":dataY,"population":population,"expression":expr}
+    tc=(np.array(y_true).tolist())
+    return {"gen":gen,"trueCurve":tc,"dataX":dataX,"dataY":dataY,"population":population,"expression":expr}
     # arr = np.fromstring(population,dtype=float).reshape(2,200)
     # print(arr)
 
 
 @app.post("/exec")
 def exec(item:Item):
-    print(item.user_fitness)
     global gen,pop
     est_gp.fitCalc(pop,item.user_fitness)
     gen+=1
     est_gp.set_params(generations=gen, warm_start=True)
     population=est_gp.fit(X, y)
-    expr=[x.expression() for x in population]
     pop=[x for x in population]
+    # for i in range(0,4):
+    #     default_user_fitness=[0 for x in item.user_fitness]
+    #     est_gp.fitCalc(pop,default_user_fitness)
+    #     gen+=1
+    #     est_gp.set_params(generations=gen, warm_start=True)
+    #     population=est_gp.fit(X, y)
+    #     pop=[x for x in population]
+
+    expr=[x.expression() for x in population]
     population=[x.execute(X) for x in population]
     population=(np.array(population).tolist())
     dataX=(np.array(X.reshape(-1)).tolist())
     dataY=(np.array(y).tolist())
-    tc=(np.array(true_curve).tolist())
+    tc=(np.array(y_true).tolist())
 
-    return {"trueCurve":tc,"dataX":dataX,"dataY":dataY,"population":population,"expression":expr}
+    return {"gen":gen,"trueCurve":tc,"dataX":dataX,"dataY":dataY,"population":population,"expression":expr}
     
+@app.get("/extrapolate")
+def extrapolate():
+    global gen,pop
+
+    expr=[x.expression() for x in pop]
+    X_test=np.linspace(-5,40,200)
+    y_test=true_curve(X_test)
+    X_test=X_test.reshape(-1,1)
+    population=[x.execute(X_test) for x in pop]
+    population=(np.array(population).tolist())
+    dataX=(np.array(X_test.reshape(-1)).tolist())
+    dataY=(np.array(y_test).tolist())
+    tc=(np.array(y_test).tolist())
+    
+
+    return {"gen":gen,"trueCurve":tc,"dataX":dataX,"dataY":dataY,"population":population,"expression":expr}
+

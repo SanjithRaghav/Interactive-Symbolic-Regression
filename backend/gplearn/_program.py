@@ -161,6 +161,7 @@ class _Program(object):
         self._n_samples = None
         self._max_samples = None
         self._indices_state = None
+        self.standard_fitness=None
 
     def build_program(self, random_state):
         """Build a naive random program.
@@ -262,16 +263,16 @@ class _Program(object):
         
     def prefix_to_infix(self,expression):
 
-        operators = {'add': '+', 'sub': '-', 'mul': '*', 'div': '/', 'sqrt': 'square_root',
+        operators = {'add': '+', 'sub': '-', 'mul': '*', 'div': '\\frac', 'sqrt': 'square_root',
                     'log': 'log', 'abs': 'abs', 'neg': 'neg', 'inv': '1/', 'max': 'max', 'min': 'min',
-                    'sin': 'sin', 'cos': 'cos', 'tan': 'tan'}
+                    'sin': 'sin', 'cos': 'cos', 'tan': 'tan', 'square':'^2','cube':'^3','power4':'^4'}
 
         def is_operator(token):
             return token in operators
 
         def get_arity(operator):
             arities = {'add': 2, 'sub': 2, 'mul': 2, 'div': 2, 'sqrt': 1, 'log': 1, 'abs': 1, 'neg': 1,
-                    'inv': 1, 'max': 2, 'min': 2, 'sin': 1, 'cos': 1, 'tan': 1}
+                    'inv': 1, 'max': 2, 'min': 2, 'sin': 1, 'cos': 1, 'tan': 1,'square':1,'cube':1,'power4':1}
             return arities.get(operator, 0)
 
         def is_unary_operator(operator):
@@ -293,11 +294,18 @@ class _Program(object):
                 operator = token
                 if is_unary_operator(operator):
                     operand = stack.pop()
-                    stack.append(f"{operators[operator]}({operand})")
+                    if(operator in ["square","cube","power4"]):
+                        stack.append(f"({operand}){operators[operator]}")
+                    else:
+                        stack.append(f"{operators[operator]}({operand})")
+                    
                 else:
                     operand2 = stack.pop()
                     operand1 = stack.pop()
-                    stack.append(f"({operand1} {operators[operator]} {operand2})")
+                    if(operator=='div'):
+                        stack.append(f"({operators[operator]}{{{operand1}}}{{{operand2}}})")
+                    else:
+                        stack.append(f"({operand1} {operators[operator]} {operand2})")
             else:
                 stack.append(token)
 
@@ -510,7 +518,7 @@ class _Program(object):
 
         return raw_fitness
 
-    def fitness(self, parsimony_coefficient=None):
+    def fitness(self, parsimony_coefficient=None,max_fitness=None):
         """Evaluate the penalized fitness of the program according to X, y.
 
         Parameters
@@ -528,6 +536,8 @@ class _Program(object):
         if parsimony_coefficient is None:
             parsimony_coefficient = self.parsimony_coefficient
         penalty = parsimony_coefficient * len(self.program) * self.metric.sign
+        penalty/=max_fitness
+        # print(self.raw_fitness_," ",penalty," ",self.raw_fitness_ - penalty)
         return self.raw_fitness_ - penalty
 
     def get_subtree(self, random_state, program=None):

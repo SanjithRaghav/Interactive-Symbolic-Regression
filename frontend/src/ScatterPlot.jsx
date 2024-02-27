@@ -1,8 +1,12 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
 import './scatter.css'
+import { MathComponent } from "mathjax-react";
 
-const ScatterPlot = ({ data,val,setVal,ind }) => {
+const ScatterPlot = ({data,val,setVal,ind }) => {
+
+  var eqn=data.eqn.split('X')
+  eqn=eqn.join('X_')
   const trace1 = {
     x: data.X,
     y: data.trueCurve.map(point => point.y),
@@ -20,7 +24,9 @@ const ScatterPlot = ({ data,val,setVal,ind }) => {
   };
 
   const layout = {
-    title: data.eqn,
+    title:{text:ind+1},
+    width: 500,
+    height: 400,
     xaxis: { title: 'Feature (X)' },
     yaxis: { title: 'Target (y)' },
   };
@@ -33,15 +39,22 @@ const ScatterPlot = ({ data,val,setVal,ind }) => {
         return prev
     })
   }
-
   return (
     
     <div className="graph">
-      <Plot
-      data={[trace1, trace2]}
-      layout={layout}
-      />
+      <div className="plot">
+        <Plot
+        
+        style={{ display:"inline",margin:"0 auto"}} 
+        data={[trace1, trace2]}
+        layout={layout}
+        />
+      </div>
+      <div className='equation'>
+       <MathComponent tex={eqn}  />
+      </div>
       <input
+        className='inputBox'
         type="number"
         id="inputBox"
         value={val[ind]}

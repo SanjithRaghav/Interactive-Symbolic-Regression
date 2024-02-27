@@ -1,5 +1,28 @@
-.graph{
-   display: inline;
-   max-width:50%;
 
+.inputBox{
+   display:block;
+   margin:0 auto;
+}
+
+.submit{
+   margin:10px 0 0 0 ;
+   background-color: white;
+   color: black;
+   padding: 10px;
+   border-radius: 5px;
+}
+.submit:hover{
+   background-color: black;
+   color: white;
+   cursor: pointer;
+}
+
+.plot{
+   display: flex;
+   justify-content:center ;
+   
+}
+.equation{
+   max-width: 800px;
+   overflow: hidden;
 }

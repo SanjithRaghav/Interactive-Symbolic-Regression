@@ -12,6 +12,7 @@
   "dependencies": {
     "d3": "^7.8.5",
     "lodash": "^4.17.21",
+    "mathjax-react": "^2.0.1",
     "plotly.js": "^2.28.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -259,6 +259,7 @@ class BaseSymbolic(BaseEstimator, metaclass=ABCMeta):
                                      run_details['average_fitness'][-1],
                                      run_details['best_length'][-1],
                                      run_details['best_fitness'][-1],
+                                     run_details['standard_fitness'][-1],
                                      oob_fitness,
                                      remaining_time))
 
@@ -436,7 +437,9 @@ class BaseSymbolic(BaseEstimator, metaclass=ABCMeta):
                                  'best_length': [],
                                  'best_fitness': [],
                                  'best_oob_fitness': [],
-                                 'generation_time': []}
+                                 'generation_time': [],
+                                 'standard_fitness':[],
+                                 }
 
         prior_generations = len(self._programs)
         n_more_generations = self.generations - prior_generations
@@ -494,12 +497,15 @@ class BaseSymbolic(BaseEstimator, metaclass=ABCMeta):
         for gen in range(prior_generations, self.generations):
             start_time = time()
 
+            for program in population:
+                program.standard_fitness=program.raw_fitness_
             fitness = [program.raw_fitness_ for program in population]
             length = [program.length_ for program in population]
-
+            max_fitness=max(fitness)
             print()
             print("----------------------------------------------")
             print()
+            user_fitness=[(5-x) for x in user_fitness]
             print(f'user fitness evaluation for {gen}: {user_fitness}')
             user_fitness=[x/5 for x in user_fitness]
             print(f'user fitness evaluation for {gen} after normalization: {user_fitness}')
@@ -509,15 +515,20 @@ class BaseSymbolic(BaseEstimator, metaclass=ABCMeta):
             fitness = [a + b for a, b in zip(fitness, user_fitness)]
             print(f'combined fitness for {gen}: {fitness}')
             print()
-
+ 
 
             parsimony_coefficient = None
             if self.parsimony_coefficient == 'auto':
                 parsimony_coefficient = (np.cov(length, fitness)[1, 0] /
                                          np.var(length))
+            # for program in population:
+            #     program.fitness_ = program.fitness(parsimony_coefficient)
+            i=0    
             for program in population:
-                program.fitness_ = program.fitness(parsimony_coefficient)
-
+                program.raw_fitness_= fitness[i]
+                i+=1
+                program.fitness_ = program.fitness(parsimony_coefficient,max_fitness)
+                # print(program.fitness_)
             self._programs.append(population)
 
             # Remove old programs that didn't make it into the new population.
@@ -548,6 +559,7 @@ class BaseSymbolic(BaseEstimator, metaclass=ABCMeta):
             self.run_details_['average_fitness'].append(np.mean(fitness))
             self.run_details_['best_length'].append(best_program.length_)
             self.run_details_['best_fitness'].append(best_program.raw_fitness_)
+            self.run_details_['standard_fitness'].append(best_program.standard_fitness)
             oob_fitness = np.nan
             if self.max_samples < 1.0:
                 oob_fitness = best_program.oob_fitness_
