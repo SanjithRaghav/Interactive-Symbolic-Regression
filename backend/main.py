@@ -22,7 +22,7 @@ X_train=np.column_stack((X,Y))
 # X = X.reshape(-1, 1)  # Reshape X to [n_samples, n_features] where n_features is 1
 y = y.reshape(-1)     # Reshape y to [n_samples]
 from gplearn.genetic import SymbolicRegressor
-est_gp = SymbolicRegressor(population_size=6,
+est_gp = SymbolicRegressor(population_size=12,
                            generations=1, stopping_criteria=0.01,
                            p_crossover=0.7, p_subtree_mutation=0.1,
                            p_hoist_mutation=0.05, p_point_mutation=0.1,
@@ -72,7 +72,7 @@ def get_items():
 
 
     print(X)
-    return {"trueCurve":y1.tolist(),"dataX":x0.tolist(),"dataY":x1.tolist(),"population":population,"expression":expr}
+    return {"trueCurve":y1.tolist(),"dataX":x0.tolist(),"dataY":x1.tolist(),"population":population,"expression":expr,"gen":gen}
     # arr = np.fromstring(population,dtype=float).reshape(2,200)
     # print(arr)
 
@@ -90,4 +90,4 @@ def exec(item:Item):
     population=[x.execute(np.c_[x2.ravel(), x3.ravel()]).reshape(x3.shape) for x in population]
     population=(np.array(population).tolist())
 
-    return {"trueCurve":y1.tolist(),"dataX":x0.tolist(),"dataY":x1.tolist(),"population":population,"expression":expr}
+    return {"trueCurve":y1.tolist(),"dataX":x0.tolist(),"dataY":x1.tolist(),"population":population,"expression":expr,"gen":gen}

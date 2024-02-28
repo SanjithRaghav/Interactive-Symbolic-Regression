@@ -5,6 +5,7 @@ import ScatterPlot from './ScatterPlot';
 import './App.css'
 import chunk from 'lodash/chunk'
 const App = () => {
+  const [gen,setGen]=useState(0)
   const [val,setVal]=useState([])
   const [dispIndex,setDispIndex]=useState(0)
   const [population,setPopulation]=useState([])
@@ -12,10 +13,34 @@ const App = () => {
   const getData=async ()=>{
     const res=await fetch("http://localhost:8000/gen")
     const data=await res.json()
+    setGen(data.gen)
     const pop=data.population.map((p,j)=>{
-
+      const syntheticData=data.dataX.map((f,i)=>{
+        return {x:f,y:data.dataY[i]}
+      })
+      const trueCurve=data.dataX.map((f,i)=>{
+        return {x:f,y:p[i]}
+      })
       const curve=p
-      return {eqn:data.expression[j],X:data.dataX,Y:data.dataY,curve,syntheticData:data.trueCurve}
+      return {eqn:data.expression[j],curve,X:data.dataX,trueCurve,syntheticData:data.trueCurve}
+    })
+
+    setVal(data.population.map((i)=>(0)))
+    setPopulation(pop)
+    setDispIndex(0)
+  }
+  const Extrapolate=async ()=>{
+    const res=await fetch("http://localhost:8000/extrapolate")
+    const data=await res.json()
+    setGen(data.gen)
+    const pop=data.population.map((p,j)=>{
+      const syntheticData=data.dataX.map((f,i)=>{
+        return {x:f,y:data.dataY[i]}
+      })
+      const trueCurve=data.dataX.map((f,i)=>{
+        return {x:f,y:p[i]}
+      })
+      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.trueCurve}
     })
 
     setVal(data.population.map((i)=>(0)))
@@ -33,9 +58,16 @@ const App = () => {
       body:JSON.stringify(postData)
     })
     const data=await res.json()
+    setGen(data.gen)
     const pop=data.population.map((p,j)=>{
+      const syntheticData=data.dataX.map((f,i)=>{
+        return {x:f,y:data.dataY[i]}
+      })
+      const trueCurve=data.dataX.map((f,i)=>{
+        return {x:f,y:p[i]}
+      })
       const curve=p
-      return {eqn:data.expression[j],X:data.dataX,Y:data.dataY,curve,syntheticData:data.trueCurve}
+      return {eqn:data.expression[j],X:data.dataX,trueCurve,curve,syntheticData:data.trueCurve}
     })
 
     setVal(data.population.map((i)=>(0)))
@@ -60,16 +92,32 @@ const App = () => {
     postData()
   }
  } 
+ const Previous=()=>{
+  setDispIndex((prev)=>{
+    if(prev>0){
+      return prev-1
+    }
+    return prev
+  })
+ }
  
 
   return (
     <div className="App">
+      <h1 className='gen'>Gen:{gen}</h1>
+      <div className='graphGrid'>
       {data[dispIndex]}
+      </div>
 
-      <button onClick={Next}>next</button>
+      <div>
+      <button className="submit" onClick={Previous}>previos</button>
+      <button className="submit" onClick={Next}>next</button>
+      {/* <button className="submit" onClick={Extrapolate}>Extrapolate</button>
+      <button className="submit" onClick={getData}>Normal Range</button> */}
+      </div>
+
     </div>
   );
 };
 
 export default App;
-App.js
