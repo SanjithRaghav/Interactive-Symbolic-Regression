@@ -311,6 +311,7 @@ class _Program(object):
 
         return stack[0]
     
+    
 
     def export_graphviz(self, fade_nodes=None):
         """Returns a string, Graphviz script for visualizing the program.
@@ -670,6 +671,9 @@ class _Program(object):
                        set(range(start + sub_start, start + sub_end)))
         return self.program[:start] + hoist + self.program[end:], removed
 
+    def getLength(self):
+        return self.length_
+    
     def point_mutation(self, random_state):
         """Perform the point mutation operation on the program.
 
@@ -722,3 +726,5 @@ class _Program(object):
     depth_ = property(_depth)
     length_ = property(_length)
     indices_ = property(_indices)
+
+

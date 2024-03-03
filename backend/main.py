@@ -99,6 +99,7 @@ def exec(item:Item):
 
     expr=[x.expression() for x in population]
     population=[x.execute(X) for x in population]
+    print(population)
     population=(np.array(population).tolist())
     dataX=(np.array(X.reshape(-1)).tolist())
     dataY=(np.array(y).tolist())
@@ -123,3 +124,21 @@ def extrapolate():
 
     return {"gen":gen,"trueCurve":tc,"dataX":dataX,"dataY":dataY,"population":population,"expression":expr}
 
+
+@app.get("/getRmse")
+def rmse():
+    global pop
+    values = [x.execute(X) for x in pop]
+    error = []
+    for x in range(len(values)):
+        error.append(np.sqrt(np.mean((values[x]-y)**2)))
+    print(error)
+
+@app.get("/getRmseTest")
+def getSimplicity():
+    global pop
+    lens=[x.getLength() for x in pop]
+    error = []
+    for x in range(len(lens)):
+        error.append(round(-np.log(lens[x]) / np.log(5), 1))
+    print(error)
