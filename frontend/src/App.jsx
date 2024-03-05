@@ -5,6 +5,7 @@ import ScatterPlot from './ScatterPlot';
 import './App.css'
 import chunk from 'lodash/chunk'
 const App = () => {
+  const [metrics,setMetrics]=useState(0)
   const [gen,setGen]=useState(0)
   const [val,setVal]=useState([])
   const [dispIndex,setDispIndex]=useState(0)
@@ -21,7 +22,7 @@ const App = () => {
       const trueCurve=data.dataX.map((f,i)=>{
         return {x:f,y:p[i]}
       })
-      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.trueCurve}
+      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.trueCurve,rsquared:data.rsquared[j],simplicity:data.simplicity[j]}
     })
 
     setVal(data.population.map((i)=>(0)))
@@ -39,7 +40,7 @@ const App = () => {
       const trueCurve=data.dataX.map((f,i)=>{
         return {x:f,y:p[i]}
       })
-      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.trueCurve}
+      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.trueCurve,rsquared:data.rsquared[j],simplicity:data.simplicity[j]}
     })
 
     setVal(data.population.map((i)=>(0)))
@@ -65,7 +66,7 @@ const App = () => {
       const trueCurve=data.dataX.map((f,i)=>{
         return {x:f,y:p[i]}
       })
-      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.trueCurve}
+      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.trueCurve,rsquared:data.rsquared[j],simplicity:data.simplicity[j]}
     })
 
     setVal(data.population.map((i)=>(0)))
@@ -78,7 +79,7 @@ const App = () => {
 
   const data=(chunk(
     population.map((d,i)=>{
-        return (<ScatterPlot key={i} data={d} setVal={setVal} val={val} ind={i} />)
+        return (<ScatterPlot key={i} data={d} setVal={setVal} val={val} ind={i} metrics={metrics}/>)
       })
     ,6)
   )
@@ -98,7 +99,9 @@ const App = () => {
     return prev
   })
  }
- 
+ const handleToggle = () => {
+  setMetrics((prev)=>(!prev));
+};
 
   return (
     <div className="App">
@@ -106,12 +109,14 @@ const App = () => {
       <div className='graphGrid'>
       {data[dispIndex]}
       </div>
-
       <div>
       <button className="submit" onClick={Previous}>previos</button>
       <button className="submit" onClick={Next}>next</button>
       <button className="submit" onClick={Extrapolate}>Extrapolate</button>
       <button className="submit" onClick={getData}>Normal Range</button>
+      <button className="submit" onClick={handleToggle}>
+        {metrics ? 'Metrincs : OFF' : 'Metrics: ON'}
+      </button>
       </div>
 
     </div>

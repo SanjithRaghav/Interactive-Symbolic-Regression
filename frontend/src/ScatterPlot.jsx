@@ -3,8 +3,7 @@ import Plot from 'react-plotly.js';
 import './scatter.css'
 import { MathComponent } from "mathjax-react";
 
-const ScatterPlot = ({data,val,setVal,ind }) => {
-
+const ScatterPlot = ({data,val,setVal,ind,metrics}) => {
   var eqn=data.eqn.split('X')
   eqn=eqn.join('X_')
   const trace1 = {
@@ -61,6 +60,7 @@ const ScatterPlot = ({data,val,setVal,ind }) => {
         onChange={handleInputChange}
         placeholder="Type something..."
       />
+      {metrics  && <p>Simplicity: {data.simplicity} , RSquared: {data.rsquared}</p>}
     </div>
 
   );
