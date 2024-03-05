@@ -2,6 +2,7 @@ from typing import Union
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.special import erf
+from sklearn.metrics import r2_score
 # Set the seed for reproducibility
 np.random.seed(42)
 def true_curve(x):
@@ -76,7 +77,17 @@ def get_items():
     dataX=(np.array(X.reshape(-1)).tolist())
     dataY=(np.array(y).tolist())
     tc=(np.array(y_true).tolist())
-    return {"gen":gen,"trueCurve":tc,"dataX":dataX,"dataY":dataY,"population":population,"expression":expr}
+    predicted = [x.execute(X) for x in pop]
+    Rsquared = []
+    for x in range(len(predicted)):
+        Rsquared.append(r2_score(y,predicted[x]))
+    lens=[x.getLength() for x in pop]
+    simplicity = []
+    for x in range(len(lens)):
+        simplicity.append(round(-np.log(lens[x]) / np.log(5), 1))
+    # print(f'simplicity:{simplicity}, rsquared:{Rsquared}')
+    return {"gen":gen,"trueCurve":tc,"dataX":dataX,"dataY":dataY,"population":population,"expression":expr,"rsquared":Rsquared,'simplicity':simplicity}
+
     # arr = np.fromstring(population,dtype=float).reshape(2,200)
     # print(arr)
 
@@ -105,7 +116,16 @@ def exec(item:Item):
     dataY=(np.array(y).tolist())
     tc=(np.array(y_true).tolist())
 
-    return {"gen":gen,"trueCurve":tc,"dataX":dataX,"dataY":dataY,"population":population,"expression":expr}
+    predicted = [x.execute(X) for x in pop]
+    Rsquared = []
+    for x in range(len(predicted)):
+        Rsquared.append(r2_score(y,predicted[x]))
+    lens=[x.getLength() for x in pop]
+    simplicity = []
+    for x in range(len(lens)):
+        simplicity.append(round(-np.log(lens[x]) / np.log(5), 1))
+
+    return {"gen":gen,"trueCurve":tc,"dataX":dataX,"dataY":dataY,"population":population,"expression":expr,"rsquared":Rsquared,'simplicity':simplicity}
     
 @app.get("/extrapolate")
 def extrapolate():
@@ -122,23 +142,17 @@ def extrapolate():
     tc=(np.array(y_test).tolist())
     
 
-    return {"gen":gen,"trueCurve":tc,"dataX":dataX,"dataY":dataY,"population":population,"expression":expr}
-
-
-@app.get("/getRmse")
-def rmse():
-    global pop
-    values = [x.execute(X) for x in pop]
-    error = []
-    for x in range(len(values)):
-        error.append(np.sqrt(np.mean((values[x]-y)**2)))
-    print(error)
-
-@app.get("/getRmseTest")
-def getSimplicity():
-    global pop
+    predicted = [x.execute(X) for x in pop]
+    Rsquared = []
+    for x in range(len(predicted)):
+        Rsquared.append(r2_score(y,predicted[x]))
     lens=[x.getLength() for x in pop]
-    error = []
+    simplicity = []
     for x in range(len(lens)):
-        error.append(round(-np.log(lens[x]) / np.log(5), 1))
-    print(error)
+        simplicity.append(round(-np.log(lens[x]) / np.log(5), 1))
+
+    return {"gen":gen,"trueCurve":tc,"dataX":dataX,"dataY":dataY,"population":population,"expression":expr,"rsquared":Rsquared,'simplicity':simplicity}
+
+
+
+
