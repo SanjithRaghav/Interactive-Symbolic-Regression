@@ -2,7 +2,7 @@
 
 NAVIGATE TO 2dviz2 branch -> git checkout 2dviz2
 
-## task 1 has been set up. After its completion, make some adjustments to the code for Task 2.
+### task 1 has been set up. After its completion, make some adjustments to the code for Task 2.
 
 - backend 
      - uvicorn main:app --reload
