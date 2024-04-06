@@ -11,7 +11,7 @@ CHANGES FOR TASK2:
 - backend>main.py>
       - (comment line 9,uncomment line 10,comment line 21-23)
 - frontend>ScatterPlot.jsx>
-      - line 20 ->change "markers" to "lines"
+ - line 20 ->change "markers" to "lines"
 
 
 - Sub-item A
