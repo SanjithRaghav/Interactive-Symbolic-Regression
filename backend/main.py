@@ -6,8 +6,8 @@ from sklearn.metrics import r2_score
 # Set the seed for reproducibility
 np.random.seed(42)
 def true_curve(x):
-    # return ((0.4 * x**4) - (1.4 * x**3)) / ((0.68 * x**2) + 1)
-    return erf(0.22 * x) + 0.17 * np.sin(5.5 * x)
+    return ((0.4 * x**4) - (1.4 * x**3)) / ((0.68 * x**2) + 1)
+    # return erf(0.22 * x) + 0.17 * np.sin(5.5 * x)
 
 
 # Create the original data
@@ -18,9 +18,9 @@ y_noisy=true_curve(x)
 noise_ratios = [0.05, 0.1, 0.15]
 
 
-# y_noisy += np.random.normal(0, 
-#                     0.15*np.sqrt(np.mean(np.square(y_noisy))),
-#                     size=len(y_noisy))
+y_noisy += np.random.normal(0, 
+                    0.15*np.sqrt(np.mean(np.square(y_noisy))),
+                    size=len(y_noisy))
 
 
 X = x.reshape(-1, 1) 

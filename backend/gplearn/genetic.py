@@ -505,9 +505,9 @@ class BaseSymbolic(BaseEstimator, metaclass=ABCMeta):
             print()
             print("----------------------------------------------")
             print()
-            user_fitness=[(5-x) for x in user_fitness]
+            user_fitness=[(2-x) for x in user_fitness]
             print(f'user fitness evaluation for {gen}: {user_fitness}')
-            user_fitness=[x/5 for x in user_fitness]
+            user_fitness=[x/2 for x in user_fitness]
             print(f'user fitness evaluation for {gen} after normalization: {user_fitness}')
             print(f'standard fitness evaluation for {gen}: {fitness}')
             fitness=[x/max(fitness) for x in fitness]

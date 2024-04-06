@@ -5,7 +5,7 @@ import ScatterPlot from './ScatterPlot';
 import './App.css'
 import chunk from 'lodash/chunk'
 const App = () => {
-  const [metrics,setMetrics]=useState(0)
+  const [metrics,setMetrics]=useState(false)
   const [gen,setGen]=useState(0)
   const [val,setVal]=useState([])
   const [dispIndex,setDispIndex]=useState(0)
@@ -22,7 +22,9 @@ const App = () => {
       const trueCurve=data.dataX.map((f,i)=>{
         return {x:f,y:p[i]}
       })
-      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.trueCurve,rsquared:data.rsquared[j],simplicity:data.simplicity[j]}
+      // return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.trueCurve,rsquared:data.rsquared[j],simplicity:data.simplicity[j]}
+      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.dataY,rsquared:data.rsquared[j],simplicity:data.simplicity[j]}
+
     })
 
     setVal(data.population.map((i)=>(0)))
@@ -40,7 +42,8 @@ const App = () => {
       const trueCurve=data.dataX.map((f,i)=>{
         return {x:f,y:p[i]}
       })
-      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.trueCurve,rsquared:data.rsquared[j],simplicity:data.simplicity[j]}
+      // return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.trueCurve,rsquared:data.rsquared[j],simplicity:data.simplicity[j]}
+      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.dataY,rsquared:data.rsquared[j],simplicity:data.simplicity[j]}
     })
 
     setVal(data.population.map((i)=>(0)))
@@ -66,7 +69,9 @@ const App = () => {
       const trueCurve=data.dataX.map((f,i)=>{
         return {x:f,y:p[i]}
       })
-      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.trueCurve,rsquared:data.rsquared[j],simplicity:data.simplicity[j]}
+      // return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.trueCurve,rsquared:data.rsquared[j],simplicity:data.simplicity[j]}
+      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.dataY,rsquared:data.rsquared[j],simplicity:data.simplicity[j]}
+
     })
 
     setVal(data.population.map((i)=>(0)))
