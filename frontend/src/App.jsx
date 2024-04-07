@@ -23,7 +23,7 @@ const App = () => {
         return {x:f,y:p[i]}
       })
       // return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.trueCurve,rsquared:data.rsquared[j],simplicity:data.simplicity[j]}
-      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.dataY,rsquared:data.rsquared[j],simplicity:data.simplicity[j]}
+      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.dataY,rsquared:data.rsquared[j],simplicity:data.simplicity[j],tc:data.trueCurve}
 
     })
 
@@ -43,7 +43,7 @@ const App = () => {
         return {x:f,y:p[i]}
       })
       // return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.trueCurve,rsquared:data.rsquared[j],simplicity:data.simplicity[j]}
-      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.dataY,rsquared:data.rsquared[j],simplicity:data.simplicity[j]}
+      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.dataY,rsquared:data.rsquared[j],simplicity:data.simplicity[j],tc:data.trueCurve}
     })
 
     setVal(data.population.map((i)=>(0)))
@@ -70,7 +70,7 @@ const App = () => {
         return {x:f,y:p[i]}
       })
       // return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.trueCurve,rsquared:data.rsquared[j],simplicity:data.simplicity[j]}
-      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.dataY,rsquared:data.rsquared[j],simplicity:data.simplicity[j]}
+      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.dataY,rsquared:data.rsquared[j],simplicity:data.simplicity[j],tc:data.trueCurve}
 
     })
 
