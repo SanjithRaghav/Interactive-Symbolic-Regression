@@ -117,11 +117,11 @@ const App = () => {
       <div>
       <button className="submit" onClick={Previous}>previous</button>
       <button className="submit" onClick={Next}>next</button>
-      {/* <button className="submit" onClick={Extrapolate}>Extrapolate</button>
+      <button className="submit" onClick={Extrapolate}>Extrapolate</button>
       <button className="submit" onClick={getData}>Normal Range</button>
       <button className="submit" onClick={handleToggle}>
         {metrics ? 'Metrincs : OFF' : 'Metrics: ON'}
-      </button> */}
+      </button>
       </div>
 
     </div>
