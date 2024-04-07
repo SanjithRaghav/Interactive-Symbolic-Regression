@@ -4,10 +4,10 @@ import matplotlib.pyplot as plt
 from scipy.special import erf
 from sklearn.metrics import r2_score
 # Set the seed for reproducibility
-np.random.seed(42)
+# np.random.seed(42)
 def true_curve(x):
     return ((0.4 * x**4) - (1.4 * x**3)) / ((0.68 * x**2) + 1)
-    # return erf(0.22 * x) + 0.17 * np.sin(5.5 * x)
+    return erf(0.22 * x) + 0.17 * np.sin(5.5 * x)
 
 
 # Create the original data
