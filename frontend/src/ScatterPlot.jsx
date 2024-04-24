@@ -16,8 +16,8 @@ const ScatterPlot = ({data,val,setVal,ind,metrics}) => {
 
   const trace2 = {
     x: data.X,
-    y: data.syntheticData,
-    mode: 'markers',
+    y: data.tc,
+    mode: 'lines',
     name: 'Generating Function',
     marker: { color: 'orange', size: 8 }
   };

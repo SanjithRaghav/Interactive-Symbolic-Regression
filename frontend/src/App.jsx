@@ -31,6 +31,26 @@ const App = () => {
     setPopulation(pop)
     setDispIndex(0)
   }
+  const normalRange=async ()=>{
+    const res=await fetch("http://localhost:8000/normalRange")
+    const data=await res.json()
+    setGen(data.gen)
+    const pop=data.population.map((p,j)=>{
+      const syntheticData=data.dataX.map((f,i)=>{
+        return {x:f,y:data.dataY[i]}
+      })
+      const trueCurve=data.dataX.map((f,i)=>{
+        return {x:f,y:p[i]}
+      })
+      // return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.trueCurve,rsquared:data.rsquared[j],simplicity:data.simplicity[j]}
+      return {eqn:data.expression[j],X:data.dataX,trueCurve,syntheticData:data.dataY,rsquared:data.rsquared[j],simplicity:data.simplicity[j],tc:data.trueCurve}
+
+    })
+
+    setVal(data.population.map((i)=>(0)))
+    setPopulation(pop)
+    setDispIndex(0)
+  }
   const Extrapolate=async ()=>{
     const res=await fetch("http://localhost:8000/extrapolate")
     const data=await res.json()
@@ -118,7 +138,7 @@ const App = () => {
       <button className="submit" onClick={Previous}>previous</button>
       <button className="submit" onClick={Next}>next</button>
       <button className="submit" onClick={Extrapolate}>Extrapolate</button>
-      <button className="submit" onClick={getData}>Normal Range</button>
+      <button className="submit" onClick={normalRange}>Normal Range</button>
       <button className="submit" onClick={handleToggle}>
         {metrics ? 'Metrincs : OFF' : 'Metrics: ON'}
       </button>

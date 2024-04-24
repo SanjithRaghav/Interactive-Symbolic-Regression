@@ -6,8 +6,8 @@ from sklearn.metrics import r2_score
 # Set the seed for reproducibility
 # np.random.seed(42)
 def true_curve(x):
-    return ((0.4 * x**4) - (1.4 * x**3)) / ((0.68 * x**2) + 1)
-    # return erf(0.22 * x) + 0.17 * np.sin(5.5 * x)
+    # return ((0.4 * x**4) - (1.4 * x**3)) / ((0.68 * x**2) + 1)
+    return erf(0.22 * x) + 0.17 * np.sin(5.5 * x)
 
 
 # Create the original data
@@ -33,9 +33,9 @@ est_gp = SymbolicRegressor(population_size=30,
                            p_crossover=0.4, p_subtree_mutation=0.2,
                            p_hoist_mutation=0.1, p_point_mutation=0.3,
                            max_samples=0.9, verbose=1,
-                           parsimony_coefficient=0.01, random_state=0,function_set=('add','mul','sub','div','sin','cos','tan'))
+                           parsimony_coefficient=0.001,function_set=('add','mul','sub','div','sin','cos','tan'))
 
-
+#0.05,0.001,0.005,0.1,0.5
 from fastapi import FastAPI
 from pydantic import BaseModel
 
@@ -133,6 +133,32 @@ def extrapolate():
 
     expr=[x.expression() for x in pop]
     X_test=np.linspace(-5,40,200)
+    y_test=true_curve(X_test)
+    X_test=X_test.reshape(-1,1)
+    population=[x.execute(X_test) for x in pop]
+    population=(np.array(population).tolist())
+    dataX=(np.array(X_test.reshape(-1)).tolist())
+    dataY=(np.array(y_test).tolist())
+    tc=(np.array(y_test).tolist())
+    
+
+    predicted = [x.execute(X) for x in pop]
+    Rsquared = []
+    for x in range(len(predicted)):
+        Rsquared.append(r2_score(y,predicted[x]))
+    lens=[x.getLength() for x in pop]
+    simplicity = []
+    for x in range(len(lens)):
+        simplicity.append(round(-np.log(lens[x]) / np.log(5), 1))
+
+    return {"gen":gen,"trueCurve":tc,"dataX":dataX,"dataY":dataY,"population":population,"expression":expr,"rsquared":Rsquared,'simplicity':simplicity}
+
+@app.get("/normalRange")
+def normalRange():
+    global gen,pop
+
+    expr=[x.expression() for x in pop]
+    X_test=np.linspace(-5,15,200)
     y_test=true_curve(X_test)
     X_test=X_test.reshape(-1,1)
     population=[x.execute(X_test) for x in pop]
