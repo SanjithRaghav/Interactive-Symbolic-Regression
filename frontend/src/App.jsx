@@ -11,8 +11,10 @@ const App = () => {
   const [dispIndex,setDispIndex]=useState(0)
   const [population,setPopulation]=useState([])
   //[truecurve,syntheticdata]
+  const apiUrl = import.meta.env.VITE_API_URL;
+  console.log(apiUrl)
   const getData=async ()=>{
-    const res=await fetch("http://localhost:8000/gen")
+    const res=await fetch(`${apiUrl}/gen`)
     const data=await res.json()
     setGen(data.gen)
     const pop=data.population.map((p,j)=>{
@@ -32,7 +34,9 @@ const App = () => {
     setDispIndex(0)
   }
   const normalRange=async ()=>{
-    const res=await fetch("http://localhost:8000/normalRange")
+    const res=await fetch(`${apiUrl}/normalRange`)
+
+    // const res=await fetch("http://localhost:8000/normalRange")
     const data=await res.json()
     setGen(data.gen)
     const pop=data.population.map((p,j)=>{
@@ -51,8 +55,11 @@ const App = () => {
     setPopulation(pop)
     setDispIndex(0)
   }
+
   const Extrapolate=async ()=>{
-    const res=await fetch("http://localhost:8000/extrapolate")
+    const res=await fetch(`${apiUrl}/extrapolate`)
+
+    // const res=await fetch("http://localhost:8000/extrapolate")
     const data=await res.json()
     setGen(data.gen)
     const pop=data.population.map((p,j)=>{
@@ -73,7 +80,7 @@ const App = () => {
 
   const postData=async()=>{
     const postData={"user_fitness":val}
-    const res=await fetch("http://localhost:8000/exec",{
+    const res=await fetch(`${apiUrl}/exec`,{
       method:"POST",
       headers: {
         "Content-Type": "application/json",

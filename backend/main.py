@@ -19,7 +19,7 @@ noise_ratios = [0.05, 0.1, 0.15]
 
 
 y_noisy += np.random.normal(0, 
-                    0.15*np.sqrt(np.mean(np.square(y_noisy))),
+                    0.1*np.sqrt(np.mean(np.square(y_noisy))),
                     size=len(y_noisy))
 
 
